@@ -1,4 +1,4 @@
-package es.jmc;
+package com.library.api.endpoint;
 
 /**
  * Hello world!

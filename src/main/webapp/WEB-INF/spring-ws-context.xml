@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:sws="http://www.springframework.org/schema/web-services"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
+
+    <context:component-scan base-package="com.library.api"/>
+
+    <sws:annotation-driven/>
+
+    <sws:simple-wsdl url="classpath:xsd/library.xsd" id="libraryService">
+        <sws:definition location="/library.wsdl" targetNamespace="http://api.library.com/ws"/>
+    </sws:simple-wsdl>
+
+    <bean id="schemaMappingInterceptor"
+          class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadRootSmartSoapEndpointInterceptor">
+        <property name="interceptor">
+            <bean class="org.springframework.ws.server.endpoint.interceptor.ValidatingInterceptor">
+                <property name="xsdSchemaCollection" ref="libraryService-schema"/>
+                <property name="validateRequest" value="true"/>
+                <property name="validateResponse" value="true"/>
+            </bean>
+        </property>
+    </bean>
+
+    <sws:interceptors>
+        <ref bean="schemaMappingInterceptor"/>
+    </sws:interceptors>
+
+</beans>
