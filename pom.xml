@@ -15,7 +15,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.version>6.1.0</spring.version>
+    <spring.version>6.2.8</spring.version>
   </properties>
 
   <dependencies>
@@ -47,6 +47,33 @@
       <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Dependencias de Hibernate -->
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.2.224</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
   </dependencies>
 
 
