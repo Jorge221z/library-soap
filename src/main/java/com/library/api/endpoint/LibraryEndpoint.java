@@ -1,23 +1,31 @@
 package com.library.api.endpoint;
 
+import com.library.api.service.LibraryService;
 import com.library.api.ws.dto.GetBookRequest;
 import com.library.api.ws.dto.GetBookResponse;
 import com.library.api.ws.dto.Book;
 
 // 1. Anotación: Indica a Spring que esta clase es un Endpoint SOAP.
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 // 2. Anotaciones clave para mapear el mensaje XML entrante.
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import java.math.BigInteger;
 
 @Endpoint
 public class LibraryEndpoint {
 
   // El TARGET_NAMESPACE debe coincidir con el que definimos en el XSD y en el spring-ws-context.xml
   private static final String NAMESPACE_URI = "http://api.library.com/ws";
+
+  // Inyeccion por constructor
+  private final LibraryService libraryService;
+
+  public LibraryEndpoint(LibraryService libraryService) {
+    this.libraryService = libraryService;
+  }
 
   /**
    * Maneja la petición SOAP GetBookRequest.
@@ -33,18 +41,12 @@ public class LibraryEndpoint {
   @ResponsePayload
   public GetBookResponse getBook(@RequestPayload GetBookRequest request) {
 
-    // --- 1. Lógica del ENDPOINT ---
-    // Aquí es donde típicamente llamaríamos a la capa Service para la lógica de negocio.
-    // Por ahora, simularemos la lógica.
-    System.out.println("Received request for ISBN: " + request.getIsbn());
+    // --- 1. Simulamos la busqueda del libro con nuestro service --- //
+    String isbn = request.getIsbn();
+    Book book = libraryService.getBookByIdentifier(isbn);
 
     // --- 2. Creación de la Respuesta ---
     GetBookResponse response = new GetBookResponse();
-    Book book = new Book();
-    book.setIsbn(request.getIsbn());
-    book.setTitle("The Spring Journey with Gemini");
-    book.setAuthorName("J.M.C Mentor");
-    book.setPublicationYear(2025); // Usando el Integer que corregimos
 
     response.setBook(book);
 
