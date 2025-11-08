@@ -40,6 +40,12 @@
       <artifactId>spring-ws-core</artifactId>
       <version>4.0.0</version>
     </dependency>
+    <!-- WSDL4J for generating WSDL -->
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.6.3</version>
+    </dependency>
 
     <dependency>
       <groupId>jakarta.servlet</groupId>

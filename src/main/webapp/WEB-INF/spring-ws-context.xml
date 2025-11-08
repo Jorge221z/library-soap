@@ -4,33 +4,42 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:sws="http://www.springframework.org/schema/web-services"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
+                           http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <context:component-scan base-package="com.library.api"/>
 
+    <!-- Enable JPA Repositories -->
+    <jpa:repositories base-package="com.library.api.repository"/>
+
     <sws:annotation-driven/>
 
-    <sws:simple-wsdl url="classpath:xsd/library.xsd" id="libraryService">
-        <sws:definition location="/library.wsdl" targetNamespace="http://api.library.com/ws"/>
-    </sws:simple-wsdl>
+    <!-- WSDL Definition -->
+    <bean id="libraryService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
+        <property name="portTypeName" value="LibraryPort"/>
+        <property name="locationUri" value="/ws"/>
+        <property name="targetNamespace" value="http://api.library.com/ws"/>
+        <property name="schema" ref="librarySchema"/>
+    </bean>
 
-    <bean id="schemaMappingInterceptor"
-          class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadRootSmartSoapEndpointInterceptor">
-        <property name="interceptor">
-            <bean class="org.springframework.ws.server.endpoint.interceptor.ValidatingInterceptor">
-                <property name="xsdSchemaCollection" ref="libraryService-schema"/>
-                <property name="validateRequest" value="true"/>
-                <property name="validateResponse" value="true"/>
-            </bean>
-        </property>
+    <!-- XSD Schema -->
+    <bean id="librarySchema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+        <property name="xsd" value="classpath:schemas/library.xsd"/>
+    </bean>
+
+    <!-- Payload Validating Interceptor -->
+    <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+        <property name="schema" value="classpath:schemas/library.xsd"/>
+        <property name="validateRequest" value="true"/>
+        <property name="validateResponse" value="true"/>
     </bean>
 
     <sws:interceptors>
-        <ref bean="schemaMappingInterceptor"/>
+        <ref bean="validatingInterceptor"/>
     </sws:interceptors>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
