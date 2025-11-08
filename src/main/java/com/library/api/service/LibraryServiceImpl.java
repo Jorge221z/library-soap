@@ -1,10 +1,20 @@
 package com.library.api.service;
 
+import com.library.api.domain.BookEntity;
+import com.library.api.repository.BookRepository;
 import com.library.api.ws.dto.Book;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+@Transactional
 @Service
 public class LibraryServiceImpl implements LibraryService {
+
+  BookRepository bookRepository;
+  // DI inyection by Constructor
+  public LibraryServiceImpl(BookRepository bookRepository) {
+    this.bookRepository = bookRepository;
+  }
 
   public Book getBookByIdentifier(String isbn) {
     if (isbn == null) {
@@ -12,13 +22,28 @@ public class LibraryServiceImpl implements LibraryService {
     }
     System.out.println("Received request for ISBN: " + isbn);
 
-    Book book = new Book();
-    book.setIsbn(isbn);
-    book.setTitle("The Spring Journey with Gemini");
-    book.setAuthorName("J.M.C Mentor");
-    book.setPublicationYear(2025);
+    BookEntity bookEntity = bookRepository.findByIsbn(isbn);
 
-    return book;
+    if (bookEntity == null) {
+      bookEntity = new BookEntity(isbn, "The Spring Journey with Gemini", "J.M.C Mentor", 2025);
+      bookEntity = bookRepository.save(bookEntity);
+    }
+
+    return convertEntityToDto(bookEntity);
+  }
+
+
+
+  private Book convertEntityToDto(BookEntity entity) {
+    Book dto = new Book();
+
+    // El DTO(Book) no tiene ID de BD
+    dto.setIsbn(entity.getIsbn());
+    dto.setTitle(entity.getTitle());
+    dto.setAuthorName(entity.getAuthorName());
+    dto.setPublicationYear(entity.getPublicationYear());
+
+    return dto;
   }
 
 }
