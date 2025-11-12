@@ -1,9 +1,7 @@
 package com.library.api.endpoint;
 
 import com.library.api.service.LibraryService;
-import com.library.api.ws.dto.GetBookRequest;
-import com.library.api.ws.dto.GetBookResponse;
-import com.library.api.ws.dto.Book;
+import com.library.api.ws.dto.*;
 
 // 1. Anotación: Indica a Spring que esta clase es un Endpoint SOAP.
 import jakarta.validation.Valid;
@@ -48,6 +46,33 @@ public class LibraryEndpoint {
     // --- 2. Creación de la Respuesta ---
     GetBookResponse response = new GetBookResponse();
 
+    response.setBook(book);
+
+    // La respuesta Java será automáticamente convertida a XML por JAXB.
+    return response;
+  }
+
+
+  /**
+   * Maneja la petición SOAP createBookRequest.
+   *
+   * @PayloadRoot: Anotación CLAVE. Mapea la petición al metodo por el namespace y el nombre del elemento raíz.
+   * - namespace: Debe coincidir con el NAMESPACE_URI.
+   * - localPart: Debe coincidir con el nombre del elemento XML que definiste: <getBookRequest>.
+   *
+   * @RequestPayload: Indica que el argumento de entrada es el objeto Java creado a partir del XML.
+   * @ResponsePayload: Indica que el valor de retorno debe ser serializado de vuelta a XML para la respuesta.
+   */
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createBookRequest")
+  @ResponsePayload
+  public CreateBookResponse getBook(@RequestPayload @Valid CreateBookRequest request) {
+
+    // --- 1. Creamos el libro con nuestro service --- //
+    Book book = request.getBook();
+    libraryService.createBook(book);
+
+    // --- 2. Creación de la Respuesta ---
+    CreateBookResponse response = new CreateBookResponse();
     response.setBook(book);
 
     // La respuesta Java será automáticamente convertida a XML por JAXB.

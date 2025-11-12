@@ -29,4 +29,20 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="createBookRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="book" type="tns:Book" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createBookResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="book" type="tns:Book" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

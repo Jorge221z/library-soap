@@ -8,4 +8,6 @@ public interface LibraryService {
 
   Book getBookByIdentifier(String isbn);
 
+  Book createBook(Book bookDto);
+
 }

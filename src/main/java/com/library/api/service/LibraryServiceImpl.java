@@ -32,6 +32,16 @@ public class LibraryServiceImpl implements LibraryService {
     return convertEntityToDto(bookEntity);
   }
 
+  @Override
+  public Book createBook(Book bookDto) {
+
+    BookEntity book = convertDtoToEntity(bookDto);
+
+    bookRepository.save(book);
+
+    return convertEntityToDto(book);
+  }
+
 
 
   private Book convertEntityToDto(BookEntity entity) {
