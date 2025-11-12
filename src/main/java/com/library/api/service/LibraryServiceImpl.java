@@ -46,4 +46,15 @@ public class LibraryServiceImpl implements LibraryService {
     return dto;
   }
 
+  private BookEntity convertDtoToEntity(Book dto) {
+    BookEntity entity = new BookEntity();
+
+    entity.setIsbn(dto.getIsbn());
+    entity.setTitle(dto.getTitle());
+    entity.setAuthorName(dto.getAuthorName());
+    entity.setPublicationYear(dto.getPublicationYear());
+
+    return entity;
+  }
+
 }
