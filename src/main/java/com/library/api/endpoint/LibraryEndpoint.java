@@ -6,7 +6,7 @@ import com.library.api.ws.dto.GetBookResponse;
 import com.library.api.ws.dto.Book;
 
 // 1. Anotación: Indica a Spring que esta clase es un Endpoint SOAP.
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 // 2. Anotaciones clave para mapear el mensaje XML entrante.
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -30,7 +30,7 @@ public class LibraryEndpoint {
   /**
    * Maneja la petición SOAP GetBookRequest.
    *
-   * @PayloadRoot: Anotación CLAVE. Mapea la petición al método por el namespace y el nombre del elemento raíz.
+   * @PayloadRoot: Anotación CLAVE. Mapea la petición al metodo por el namespace y el nombre del elemento raíz.
    * - namespace: Debe coincidir con el NAMESPACE_URI.
    * - localPart: Debe coincidir con el nombre del elemento XML que definiste: <getBookRequest>.
    *
@@ -39,7 +39,7 @@ public class LibraryEndpoint {
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getBookRequest")
   @ResponsePayload
-  public GetBookResponse getBook(@RequestPayload GetBookRequest request) {
+  public GetBookResponse getBook(@RequestPayload @Valid GetBookRequest request) {
 
     // --- 1. Simulamos la busqueda del libro con nuestro service --- //
     String isbn = request.getIsbn();
