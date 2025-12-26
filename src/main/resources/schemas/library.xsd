@@ -45,4 +45,37 @@
         </xs:complexType>
     </xs:element>
 
+
+    <!-- Add new entities to allow borrow books to Students -->
+
+    <xs:complexType name="Student">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="borrowBookRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="isbn" type="xs:string" />
+                <xs:element name="studentId" type="xs:long" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="borrowBookResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="success" type="xs:boolean" />
+                <xs:element name="message" type="xs:string" />
+
+                <!-- If the boolean is false, no loanId will be returned so minOcurrs is mandatory here -->
+                <xs:element name="loanId" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
 </xs:schema>
