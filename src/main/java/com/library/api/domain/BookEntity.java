@@ -2,6 +2,9 @@ package com.library.api.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "BOOKS")
 public class BookEntity {
@@ -21,6 +24,9 @@ public class BookEntity {
 
   @Column(nullable = true)
   private Integer publicationYear;
+
+  @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+  private List<LoanEntity> loans = new ArrayList<>();
 
   public BookEntity() {
   }
@@ -70,5 +76,13 @@ public class BookEntity {
 
   public void setPublicationYear(Integer publicationYear) {
     this.publicationYear = publicationYear;
+  }
+
+  public List<LoanEntity> getLoans() {
+    return loans;
+  }
+
+  public void setLoans(List<LoanEntity> loans) {
+    this.loans = loans;
   }
 }
