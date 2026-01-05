@@ -1,19 +1,30 @@
 package com.library.api.service;
 
 import com.library.api.domain.BookEntity;
+import com.library.api.domain.LoanEntity;
+import com.library.api.domain.StudentEntity;
 import com.library.api.repository.BookRepository;
+import com.library.api.repository.LoanRepository;
+import com.library.api.repository.StudentRepository;
 import com.library.api.ws.dto.Book;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+import java.time.LocalDate;
+
+@Transactional //Transactional annotation from Spring Framework
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
   BookRepository bookRepository;
+  StudentRepository studentRepository;
+  LoanRepository loanRepository;
   // DI inyection by Constructor
-  public LibraryServiceImpl(BookRepository bookRepository) {
+  public LibraryServiceImpl(BookRepository bookRepository, StudentRepository studentRepository, LoanRepository loanRepository) {
     this.bookRepository = bookRepository;
+    this.studentRepository = studentRepository;
+    this.loanRepository = loanRepository;
   }
 
   public Book getBookByIdentifier(String isbn) {
@@ -65,6 +76,35 @@ public class LibraryServiceImpl implements LibraryService {
     entity.setPublicationYear(dto.getPublicationYear());
 
     return entity;
+  }
+
+  @Override
+  public LoanEntity borrowBook(String isbn, Long Id) {
+
+    // Search book
+    BookEntity bookEntity = bookRepository.findByIsbn(isbn);
+    if (bookEntity == null) {
+      throw new EntityNotFoundException("Book not found with ISBN: " + isbn);
+    }
+
+    // Get the student associated
+    StudentEntity studentEntity = studentRepository.findById(Id)
+        .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + Id));
+
+    // Validate availability
+    if (loanRepository.existsByBookAndActiveTrue(bookEntity)) {
+      throw new RuntimeException("Book is already borrowed and active.");
+    }
+
+    LoanEntity loanEntity = new LoanEntity();
+    loanEntity.setBook(bookEntity);
+    loanEntity.setStudent(studentEntity);
+    loanEntity.setLoanDate(LocalDate.now());
+    loanEntity.setActive(true);
+
+    loanRepository.save(loanEntity);
+
+    return loanEntity;
   }
 
 }

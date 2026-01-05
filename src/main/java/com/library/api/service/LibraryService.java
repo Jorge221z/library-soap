@@ -1,5 +1,6 @@
 package com.library.api.service;
 
+import com.library.api.domain.LoanEntity;
 import com.library.api.ws.dto.Book;
 
 public interface LibraryService {
@@ -9,5 +10,7 @@ public interface LibraryService {
   Book getBookByIdentifier(String isbn);
 
   Book createBook(Book bookDto);
+
+  LoanEntity borrowBook(String isbn, Long Id);
 
 }
