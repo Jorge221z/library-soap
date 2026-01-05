@@ -20,7 +20,7 @@ public class LibraryServiceImpl implements LibraryService {
   BookRepository bookRepository;
   StudentRepository studentRepository;
   LoanRepository loanRepository;
-  // DI inyection by Constructor
+  // DI injection by Constructor
   public LibraryServiceImpl(BookRepository bookRepository, StudentRepository studentRepository, LoanRepository loanRepository) {
     this.bookRepository = bookRepository;
     this.studentRepository = studentRepository;
@@ -58,7 +58,7 @@ public class LibraryServiceImpl implements LibraryService {
   private Book convertEntityToDto(BookEntity entity) {
     Book dto = new Book();
 
-    // El DTO(Book) no tiene ID de BD
+    // The DTO (Book) does not have a database ID
     dto.setIsbn(entity.getIsbn());
     dto.setTitle(entity.getTitle());
     dto.setAuthorName(entity.getAuthorName());

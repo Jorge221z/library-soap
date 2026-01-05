@@ -5,7 +5,7 @@ import com.library.api.ws.dto.Book;
 
 public interface LibraryService {
 
-  // Interfaz basada en la logica definida en el library.xsd
+  // Interface based on the logic defined in library.xsd
 
   Book getBookByIdentifier(String isbn);
 
