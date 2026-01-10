@@ -6,6 +6,7 @@ import com.library.api.domain.StudentEntity;
 import com.library.api.repository.BookRepository;
 import com.library.api.repository.LoanRepository;
 import com.library.api.repository.StudentRepository;
+import com.library.api.service.exception.LoanException;
 import com.library.api.ws.dto.Book;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     // Validate availability
     if (loanRepository.existsByBookAndActiveTrue(bookEntity)) {
-      throw new RuntimeException("Book is already borrowed and active.");
+      throw new LoanException("Book is already borrowed and active");
     }
 
     LoanEntity loanEntity = new LoanEntity();
