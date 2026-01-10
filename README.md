@@ -27,7 +27,7 @@ Once deployed, the service is available at:
 
 ## Request Examples (SOAP)
 
-Configure your HTTP client (Postman or Insomnia) to send a **POST** request to the SOAP endpoint with the following header:
+Configure your HTTP client (Postman or SoapUI) to send a **POST** request to the SOAP endpoint with the following header:
 
 ```
 Content-Type: text/xml
@@ -95,3 +95,23 @@ The application uses an in-memory H2 database, which is reset on every deploymen
   * ID: `1`
   * Name: `Jorge Developer`
 
+## Legacy Architecture Overview
+
+This project follows a **classic layered architecture**, commonly found in legacy Java Enterprise applications developed before the widespread adoption of Spring Boot and RESTful APIs.
+
+### Architectural Characteristics
+
+- **SOAP-based communication** using WSDL-first contracts.
+- **Monolithic deployment** packaged as a `.war` file.
+- **Application Server–dependent** execution (Apache Tomcat).
+- **XML-based configuration** combined with annotation-driven components.
+- **Stateful persistence layer** using JPA/Hibernate.intended for:
+
+### Purpose of This Architecture
+
+This project is intended for:
+
+- Understanding **legacy enterprise Java systems**
+- Practicing **SOAP-based integration**
+- Learning how **traditional layered architectures** were designed and maintained
+- Preparing for **maintenance, migration, or modernization** scenarios
