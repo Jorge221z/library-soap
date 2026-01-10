@@ -14,6 +14,8 @@ public class StudentEntity {
 
   private String name;
 
+  private String email;
+
   // mappedBy="student" means that the owner of the relation is the stuent attribute on the LoanEntity class
   @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<LoanEntity> loans = new ArrayList<>();
