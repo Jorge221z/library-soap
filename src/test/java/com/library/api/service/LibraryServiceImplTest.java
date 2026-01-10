@@ -7,6 +7,7 @@ import com.library.api.repository.BookRepository;
 import com.library.api.repository.LoanRepository;
 import com.library.api.repository.StudentRepository;
 import com.library.api.service.exception.LoanException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +42,6 @@ class LibraryServiceImplTest {
   void borrowBook_ShouldReturnLoan_WhenDataIsCorrect() {
     String isbn = "978-3-16-148410-0";
     Long studentId = 4L;
-
     BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
     StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
 
@@ -71,45 +71,51 @@ class LibraryServiceImplTest {
   // CASE 2: Book does not exist
   @Test
   void borrowBook_ShouldThrowException_WhenBookNotFound() {
-    // GIVEN
-    // isbn inventado
+    String isbn = "978-3-16-148410-0";
 
-    // MOCKING
-    // when(bookRepository.findByIsbn(...)).thenReturn(null);
+    when(bookRepository.findByIsbn(isbn)).thenReturn(null); // Force the mock to do not find any book
 
-    // WHEN & THEN
-    // assertThrows(RuntimeException.class, () -> libraryService.borrowBook(...));
+     Assertions.assertThrows(EntityNotFoundException.class, () -> libraryService.borrowBook(isbn, null));
 
-    // Verifica que NUNCA se llamó al studentRepository ni al loanRepository.save
+     verify(bookRepository, times(1)).findByIsbn(isbn);
+     verify(studentRepository, times(0)).findById(anyLong());
+     verify(loanRepository, times(0)).save(any(LoanEntity.class));
   }
 
   // CASE 3: Student does not exist
   @Test
   void borrowBook_ShouldThrowException_WhenStudentNotFound() {
-    // GIVEN
-    // Libro existe, pero estudiante no.
+    String isbn = "978-3-16-148410-0";
+    BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
+    Long studentId = 4L;
 
-    // MOCKING
-    // when(bookRepository...).thenReturn(book);
-    // when(studentRepository.findById(...)).thenReturn(Optional.empty()); // Así se simula "no encontrado" en Optional
+    when(bookRepository.findByIsbn(isbn)).thenReturn(bookEntity);
+    when(studentRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    // WHEN & THEN
-    // assertThrows(...);
+    Assertions.assertThrows(EntityNotFoundException.class, () -> libraryService.borrowBook(isbn, studentId));
+
+    verify(bookRepository, times(1)).findByIsbn(isbn);
+    verify(studentRepository, times(1)).findById(anyLong());
+    verify(loanRepository, times(0)).save(any(LoanEntity.class));
   }
 
   // CASE 4: Book already loaned (business logic)
   @Test
   void borrowBook_ShouldThrowLoanException_WhenBookIsAlreadyActive() {
-    // GIVEN
-    // Libro y Estudiante existen
+    String isbn = "978-3-16-148410-0";
+    long studentId = 4L;
+    BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
+    StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
 
-    // MOCKING
-    // Repositorios de busqueda devuelven ok.
-    // PERO: when(loanRepository.existsByBookAndActiveTrue(...)).thenReturn(true);
+    when(bookRepository.findByIsbn(isbn)).thenReturn(bookEntity);
+    when(studentRepository.findById(studentId)).thenReturn(Optional.of(studentEntity));
+    when(loanRepository.existsByBookAndActiveTrue(bookEntity)).thenReturn(true); // 'true' means that book is already loaned
 
-    // WHEN & THEN
-    // assertThrows(LoanException.class, ...);
-    // Verifica que el mensaje de la excepción es el que esperas.
-    // Verifica que loanRepository.save NUNCA se llamó (verify(..., never()).save(...))
+    Assertions.assertThrows(LoanException.class, () -> libraryService.borrowBook(isbn, studentId));
+
+    verify(loanRepository, never()).save(any(LoanEntity.class)); // as the book was already loaned no saving method were called
+
+    verify(bookRepository, times(1)).findByIsbn(isbn);
+    verify(studentRepository, times(1)).findById(studentId);
   }
 }
