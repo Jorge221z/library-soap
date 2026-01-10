@@ -1,38 +1,43 @@
-Library SOAP Service (Legacy Architecture Training)
+# Library SOAP Service (Legacy Architecture Training)
 
 This project is a SOAP Web Service for library management, built using Spring Framework (Classic), JPA/Hibernate, and an H2 in-memory database.
 
-🚀 How to Run the Project
+## How to Run the Project
 
-Requirements: Java 17, Maven 3.8+, Tomcat 10+.
+1. **Requirements:** Java 17, Maven 3.8+, Tomcat 10+
+2. Run the following command:
 
-Run mvn clean package.
+```bash
+mvn clean package
+```
 
-Deploy the generated .war file to your Tomcat server.
+3. Deploy the generated `.war` file to your Tomcat server.
+4. The application context path is `/library-soap`.
 
-The application context path is /library-soap.
-
-📡 Endpoints and WSDL
+## Endpoints and WSDL
 
 Once deployed, the service is available at:
 
-WSDL (Contract):
-http://localhost:8080/library-soap/ws/libraryService.wsdl
-(Use this URL to import the service into Postman or SOAP UI)
+* **WSDL (Contract):**
+  [http://localhost:8080/library-soap/ws/libraryService.wsdl](http://localhost:8080/library-soap/ws/libraryService.wsdl)
+  *(Use this URL to import the service into Postman or SOAP UI)*
 
-SOAP Endpoint:
-http://localhost:8080/library-soap/ws
+* **SOAP Endpoint:**
+  [http://localhost:8080/library-soap/ws](http://localhost:8080/library-soap/ws)
 
-🧪 Request Examples (Request Body)
+## Request Examples (SOAP)
 
-Configure your HTTP client (Postman/Insomnia) to send a POST request to the SOAP Endpoint with the header:
+Configure your HTTP client (Postman or Insomnia) to send a **POST** request to the SOAP endpoint with the following header:
 
+```
 Content-Type: text/xml
+```
 
-1. Borrow a Book (BorrowBook)
+### 1. Borrow a Book (BorrowBook)
 
-Operation: Borrows a book for an existing student.
+**Description:** Borrows a book for an existing student.
 
+```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
                xmlns:tns="http://api.library.com/ws">
     <soap:Body>
@@ -42,11 +47,13 @@ Operation: Borrows a book for an existing student.
         </tns:borrowBookRequest>
     </soap:Body>
 </soap:Envelope>
+```
 
-2. Create a Book (CreateBook)
+### 2. Create a Book (CreateBook)
 
-Operation: Registers a new book in the catalog.
+**Description:** Registers a new book in the catalog.
 
+```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
                xmlns:tns="http://api.library.com/ws">
     <soap:Body>
@@ -60,11 +67,13 @@ Operation: Registers a new book in the catalog.
         </tns:createBookRequest>
     </soap:Body>
 </soap:Envelope>
+```
 
-3. Get Book Details (GetBook)
+### 3. Get Book Details (GetBook)
 
-Operation: Retrieves book details by ISBN.
+**Description:** Retrieves book details by ISBN.
 
+```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
                xmlns:tns="http://api.library.com/ws">
     <soap:Body>
@@ -73,13 +82,16 @@ Operation: Retrieves book details by ISBN.
         </tns:getBookRequest>
     </soap:Body>
 </soap:Envelope>
+```
 
-🛠 Database (H2)
+## Database (H2)
 
-The database runs in memory and is reset on every deployment.
+The application uses an in-memory H2 database, which is reset on every deployment.
 
-Initial data: Automatically loaded from src/main/resources/import.sql.
+* **Initial data:** Automatically loaded from
+  `src/main/resources/import.sql`
+* **Test user:**
 
-Test user:
-ID: 1
-Name: Jorge Developer
+  * ID: `1`
+  * Name: `Jorge Developer`
+
