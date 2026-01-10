@@ -1,6 +1,8 @@
 package com.library.api.endpoint;
 
+import com.library.api.domain.LoanEntity;
 import com.library.api.service.LibraryService;
+import com.library.api.service.exception.LoanException;
 import com.library.api.ws.dto.*;
 
 // 1. Annotation: Tells Spring that this class is a SOAP Endpoint.
@@ -30,7 +32,7 @@ public class LibraryEndpoint {
    *
    * @PayloadRoot: KEY annotation. Maps the request to the method by namespace and root element name.
    * - namespace: Must match NAMESPACE_URI.
-   * - localPart: Must match the XML element name you defined: <getBookRequest>.
+   * - localPart: Must match the XML element name you defined: getBookRequest
    *
    * @RequestPayload: Indicates the input argument is the Java object created from the XML.
    * @ResponsePayload: Indicates the return value should be serialized back to XML for the response.
@@ -58,7 +60,7 @@ public class LibraryEndpoint {
    *
    * @PayloadRoot: KEY annotation. Maps the request to the method by namespace and root element name.
    * - namespace: Must match NAMESPACE_URI.
-   * - localPart: Must match the XML element name you defined: <getBookRequest>.
+   * - localPart: Must match the XML element name you defined: getBookRequest
    *
    * @RequestPayload: Indicates the input argument is the Java object created from the XML.
    * @ResponsePayload: Indicates the return value should be serialized back to XML for the response.
@@ -78,4 +80,45 @@ public class LibraryEndpoint {
     // The Java response will be automatically converted to XML by JAXB.
     return response;
   }
+
+
+  /**
+   * Handles the SOAP borrowBook call.
+   *
+   * @PayloadRoot: KEY annotation. Maps the request to the method by namespace and root element name.
+   * - namespace: Must match NAMESPACE_URI.
+   * - localPart: Must match the XML element name you defined: <borrowBookRequest>.
+   *
+   * @RequestPayload: Indicates the input argument is the Java object created from the XML.
+   * @ResponsePayload: Indicates the return value should be serialized back to XML for the response.
+   */
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "borrowBookRequest")
+  @ResponsePayload
+  public BorrowBookResponse borrowBook(@RequestPayload @Valid BorrowBookRequest request) {
+
+    BorrowBookResponse response = new BorrowBookResponse();
+
+    // We need to catch the errors from the Service here
+    try {
+      String isbn = request.getIsbn();
+      Long studentId = request.getStudentId();
+
+      LoanEntity loanEntity = libraryService.borrowBook(isbn, studentId);
+
+      response.setSuccess(true);
+      response.setMessage(String.format("Book %s borrowed successfully", loanEntity.getBook().getTitle()));
+      response.setLoanId(loanEntity.getLoanId());
+
+    } catch (Exception e) { // We must not stop the code flow
+      response.setSuccess(false);
+      response.setMessage(e.getMessage());
+
+      System.err.println("Failed while proccessing the borrow: " +  e.getMessage());
+      e.printStackTrace();
+    }
+
+    return response;
+  }
+
+
 }
