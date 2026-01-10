@@ -14,11 +14,13 @@ public class LoanEntity {
   private long loanId;
 
   // MANY-TO-ONE RELATION: Many loans belongs to a Student
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "student_id", nullable = false) // Foreign key in the DB
   private StudentEntity student;
 
   // MANY-TO-ONE RELATION: Many loans belogs to a book(historically, not currently)
+  @ManyToOne
+  @JoinColumn(name = "book_id")
   private BookEntity book;
 
   private LocalDate loanDate;
