@@ -33,23 +33,7 @@ Configure your HTTP client (Postman or SoapUI) to send a **POST** request to the
 Content-Type: text/xml
 ```
 
-### 1. Borrow a Book (BorrowBook)
-
-**Description:** Borrows a book for an existing student.
-
-```xml
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/ws">
-    <soap:Body>
-        <tns:borrowBookRequest>
-            <tns:isbn>978-3-456789-01-2</tns:isbn>
-            <tns:studentId>1</tns:studentId>
-        </tns:borrowBookRequest>
-    </soap:Body>
-</soap:Envelope>
-```
-
-### 2. Create a Book (CreateBook)
+### 1. Create a Book (CreateBook)
 
 **Description:** Registers a new book in the catalog.
 
@@ -69,7 +53,7 @@ Content-Type: text/xml
 </soap:Envelope>
 ```
 
-### 3. Get Book Details (GetBook)
+### 2. Get Book Details (GetBook)
 
 **Description:** Retrieves book details by ISBN.
 
@@ -80,6 +64,22 @@ Content-Type: text/xml
         <tns:getBookRequest>
             <tns:isbn>978-3-456789-01-2</tns:isbn>
         </tns:getBookRequest>
+    </soap:Body>
+</soap:Envelope>
+```
+
+### 3. Borrow a Book (BorrowBook)
+
+**Description:** Borrows a book for an existing student.
+
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:tns="http://api.library.com/ws">
+    <soap:Body>
+        <tns:borrowBookRequest>
+            <tns:isbn>978-3-456789-01-2</tns:isbn>
+            <tns:studentId>1</tns:studentId>
+        </tns:borrowBookRequest>
     </soap:Body>
 </soap:Envelope>
 ```
