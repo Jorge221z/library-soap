@@ -26,6 +26,7 @@ public class StudentEntity {
   public StudentEntity(long id, String name, List<LoanEntity> loans) {
     this.id = id;
     this.name = name;
+    this.email = email;
     this.loans = loans;
   }
 
