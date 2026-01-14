@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Transactional //Transactional annotation from Spring Framework
 @Service
@@ -103,6 +104,23 @@ public class LibraryServiceImpl implements LibraryService {
     loanEntity.setLoanDate(LocalDate.now());
     loanEntity.setActive(true);
 
+    loanRepository.save(loanEntity);
+
+    return loanEntity;
+  }
+
+  @Override
+  public LoanEntity returnBook(Long loanId) {
+
+    LoanEntity loanEntity = loanRepository.findById(loanId) // This unpacks the Optional object into a LoanEntity one
+        .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
+
+    if (!loanEntity.isActive()) { // Book loaned as expected
+      throw new LoanException("Book is not borrowed and active yet");
+    }
+
+    loanEntity.setActive(false);
+    loanEntity.setReturnDate(LocalDate.now());
     loanRepository.save(loanEntity);
 
     return loanEntity;

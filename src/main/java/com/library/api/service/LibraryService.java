@@ -13,4 +13,6 @@ public interface LibraryService {
 
   LoanEntity borrowBook(String isbn, Long Id);
 
+  LoanEntity returnBook(Long loanId);
+
 }

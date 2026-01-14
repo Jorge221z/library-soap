@@ -77,5 +77,26 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="returnBookRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Use loanId to give access to the Book and Student fields -->
+                <xs:element name="loanId" type="xs:long" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="returnBookResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="success" type="xs:boolean" />
+                <xs:element name="message" type="xs:string" />
+
+                <!-- If the boolean is false, no returnDate will be returned so minOcurrs is mandatory here -->
+                <xs:element name="returnDate" type="xs:date" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 
 </xs:schema>
