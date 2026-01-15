@@ -84,6 +84,21 @@ Content-Type: text/xml
 </soap:Envelope>
 ```
 
+### 4. Return a Book (ReturnBook)
+
+**Description:** Return an already loaned book.
+
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:tns="http://api.library.com/ws">
+    <soap:Body>
+        <tns:returnBookRequest>
+            <tns:loanId>1</tns:loanId>
+        </tns:returnBookRequest>
+    </soap:Body>
+</soap:Envelope>
+```
+
 ## Database (H2)
 
 The application uses an in-memory H2 database, which is reset on every deployment.
