@@ -13,6 +13,11 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
+
 
 @Endpoint
 public class LibraryEndpoint {
@@ -87,7 +92,7 @@ public class LibraryEndpoint {
    *
    * @PayloadRoot: KEY annotation. Maps the request to the method by namespace and root element name.
    * - namespace: Must match NAMESPACE_URI.
-   * - localPart: Must match the XML element name you defined: <borrowBookRequest>.
+   * - localPart: Must match the XML element name you defined: borrowBookRequest
    *
    * @RequestPayload: Indicates the input argument is the Java object created from the XML.
    * @ResponsePayload: Indicates the return value should be serialized back to XML for the response.
@@ -120,5 +125,52 @@ public class LibraryEndpoint {
     return response;
   }
 
+  /**
+   * Handles the SOAP borrowBook call.
+   *
+   * @PayloadRoot: KEY annotation. Maps the request to the method by namespace and root element name.
+   * - namespace: Must match NAMESPACE_URI.
+   * - localPart: Must match the XML element name you defined: returnBookRequest
+   *
+   * @RequestPayload: Indicates the input argument is the Java object created from the XML.
+   * @ResponsePayload: Indicates the return value should be serialized back to XML for the response.
+   */
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "returnBookRequest")
+  @ResponsePayload
+  public ReturnBookResponse borrowBook(@RequestPayload @Valid ReturnBookRequest request) {
+    ReturnBookResponse response = new ReturnBookResponse();
+
+    try {
+      Long loanId = request.getLoanId();
+      LoanEntity loanEntity = libraryService.returnBook(loanId);
+
+      response.setSuccess(true);
+      response.setMessage(String.format("Book %s returned successfully", loanEntity.getBook().getTitle()));
+
+      LocalDate returnDate = loanEntity.getReturnDate();
+      if (returnDate != null) {
+        XMLGregorianCalendar xmlDate = toXmlDate(returnDate);
+        response.setReturnDate(xmlDate);
+      }
+
+    } catch (Exception e) {
+      response.setSuccess(false);
+      response.setMessage(e.getMessage());
+
+      System.err.println("Failed while proccessing the return: " +  e.getMessage());
+      e.printStackTrace();
+    }
+
+    return response;
+  }
+
+  private XMLGregorianCalendar toXmlDate(LocalDate localDate) {
+    try {
+      return DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.toString());
+    } catch (Exception e) {
+      System.err.println("Failed while converting the date to xmlDate: " +  e.getMessage());
+      return null; // As the xsd contract have minOcurrs prop, return null here is safe
+    }
+  }
 
 }

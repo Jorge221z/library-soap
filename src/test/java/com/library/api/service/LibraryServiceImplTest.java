@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +38,7 @@ class LibraryServiceImplTest {
 
   // --- TESTING CASES ---
 
-  // CASE 1: Happy Path
+  // CASE 1: Borrow Book Happy Path
   @Test
   void borrowBook_ShouldReturnLoan_WhenDataIsCorrect() {
     String isbn = "978-3-16-148410-0";
@@ -118,4 +119,67 @@ class LibraryServiceImplTest {
     verify(bookRepository, times(1)).findByIsbn(isbn);
     verify(studentRepository, times(1)).findById(studentId);
   }
+
+  // CASE 5: Return Book Happy Path
+  @Test
+  void returnBook_ShouldReturnLoan_WhenDataIsCorrect() {
+    String isbn = "978-3-16-148410-0";
+    BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
+    Long studentId = 4L;
+    StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
+
+    Long loanId = 7L;
+    LoanEntity loanEntity = new LoanEntity(); // Use this to 'train' the mocks
+    loanEntity.setBook(bookEntity);
+    loanEntity.setStudent(studentEntity);
+    loanEntity.setLoanId(loanId);
+    loanEntity.setActive(true);
+
+    when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
+
+    LoanEntity result = libraryService.returnBook(loanId);
+
+    Assertions.assertNotNull(loanEntity);
+    Assertions.assertNotNull(loanEntity.getBook());
+    Assertions.assertEquals(isbn, loanEntity.getBook().getIsbn());
+    Assertions.assertEquals(bookEntity, loanEntity.getBook());
+
+    // Important: check state changes
+    Assertions.assertFalse(loanEntity.isActive());
+    Assertions.assertNotNull(loanEntity.getReturnDate());
+    Assertions.assertEquals(LocalDate.now(), result.getReturnDate());
+
+    verify(loanRepository, times(1)).findById(loanId);
+    verify(loanRepository, times(1)).save(any(LoanEntity.class));
+  }
+
+  // CASE 6: Loan with the given loanId not exist
+  @Test
+  void returnBook_ShouldThrowEntityNotFoundException_WhenLoanNotExist() {
+    Long loanId = 7L;
+
+    // Return null to allow the service to throw the Exception
+    when(loanRepository.findById(loanId)).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(EntityNotFoundException.class, () -> libraryService.returnBook(loanId));
+
+    verify(loanRepository, times(1)).findById(loanId);
+    verify(loanRepository, never()).save(any(LoanEntity.class));
+  }
+
+  // CASE 7: Loan not currently active (business logic)
+  @Test
+  void returnBook_ShouldThrowLoanException_WhenLoanNotActive() {
+    Long loanId = 7L;
+    LoanEntity loanEntity = new LoanEntity();
+    loanEntity.setActive(false);
+
+    when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
+
+    Assertions.assertThrows(LoanException.class, () -> libraryService.returnBook(loanId));
+
+    verify(loanRepository, times(1)).findById(loanId);
+    verify(loanRepository, never()).save(any(LoanEntity.class));
+  }
+
 }
