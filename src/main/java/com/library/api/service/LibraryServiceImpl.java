@@ -115,7 +115,7 @@ public class LibraryServiceImpl implements LibraryService {
     LoanEntity loanEntity = loanRepository.findById(loanId) // This unpacks the Optional object into a LoanEntity one
         .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
 
-    if (!loanEntity.isActive()) { // Book loaned as expected
+    if (!loanEntity.isActive()) { // Loan not currently active
       throw new LoanException("Book is not borrowed and active yet");
     }
 
