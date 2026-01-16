@@ -2,7 +2,6 @@ package com.library.api.endpoint;
 
 import com.library.api.domain.LoanEntity;
 import com.library.api.service.LibraryService;
-import com.library.api.service.exception.LoanException;
 import com.library.api.ws.dto.*;
 
 // 1. Annotation: Tells Spring that this class is a SOAP Endpoint.
@@ -13,7 +12,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
@@ -147,10 +145,10 @@ public class LibraryEndpoint {
       response.setSuccess(true);
       response.setMessage(String.format("Book %s returned successfully", loanEntity.getBook().getTitle()));
 
-      LocalDate returnDate = loanEntity.getReturnDate();
+      LocalDate returnDate = loanEntity.getDueDate();
       if (returnDate != null) {
         XMLGregorianCalendar xmlDate = toXmlDate(returnDate);
-        response.setReturnDate(xmlDate);
+        response.setDueDate(xmlDate);
       }
 
     } catch (Exception e) {

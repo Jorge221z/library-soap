@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Transactional //Transactional annotation from Spring Framework
 @Service
@@ -102,6 +101,7 @@ public class LibraryServiceImpl implements LibraryService {
     loanEntity.setBook(bookEntity);
     loanEntity.setStudent(studentEntity);
     loanEntity.setLoanDate(LocalDate.now());
+    loanEntity.setDueDate(LocalDate.now().plusDays(14));
     loanEntity.setActive(true);
 
     loanRepository.save(loanEntity);
@@ -120,7 +120,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     loanEntity.setActive(false);
-    loanEntity.setReturnDate(LocalDate.now());
+    loanEntity.setDueDate(LocalDate.now());
     loanRepository.save(loanEntity);
 
     return loanEntity;

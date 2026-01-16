@@ -24,16 +24,16 @@ public class LoanEntity {
   private BookEntity book;
 
   private LocalDate loanDate;
-  private LocalDate returnDate;
+  private LocalDate dueDate;
   private boolean active;
 
   public LoanEntity() {
   }
 
-  public LoanEntity(long loanId, boolean active, LocalDate returnDate, BookEntity book, StudentEntity student, LocalDate loanDate) {
+  public LoanEntity(long loanId, boolean active, LocalDate dueDate, BookEntity book, StudentEntity student, LocalDate loanDate) {
     this.loanId = loanId;
     this.active = active;
-    this.returnDate = returnDate;
+    this.dueDate = dueDate;
     this.book = book;
     this.student = student;
     this.loanDate = loanDate;
@@ -71,12 +71,12 @@ public class LoanEntity {
     this.loanDate = loanDate;
   }
 
-  public LocalDate getReturnDate() {
-    return returnDate;
+  public LocalDate getDueDate() {
+    return dueDate;
   }
 
-  public void setReturnDate(LocalDate returnDate) {
-    this.returnDate = returnDate;
+  public void setDueDate(LocalDate dueDate) {
+    this.dueDate = dueDate;
   }
 
   public boolean isActive() {

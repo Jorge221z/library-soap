@@ -146,8 +146,8 @@ class LibraryServiceImplTest {
 
     // Important: check state changes
     Assertions.assertFalse(loanEntity.isActive());
-    Assertions.assertNotNull(loanEntity.getReturnDate());
-    Assertions.assertEquals(LocalDate.now(), result.getReturnDate());
+    Assertions.assertNotNull(loanEntity.getDueDate());
+    Assertions.assertEquals(LocalDate.now(), result.getDueDate());
 
     verify(loanRepository, times(1)).findById(loanId);
     verify(loanRepository, times(1)).save(any(LoanEntity.class));

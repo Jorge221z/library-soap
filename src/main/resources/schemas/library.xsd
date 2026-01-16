@@ -92,11 +92,21 @@
                 <xs:element name="success" type="xs:boolean" />
                 <xs:element name="message" type="xs:string" />
 
-                <!-- If the boolean is false, no returnDate will be returned so minOcurrs is mandatory here -->
-                <xs:element name="returnDate" type="xs:date" minOccurs="0" />
+                <!-- If the boolean is false, no dueDate will be returned so minOcurrs is mandatory here -->
+                <xs:element name="dueDate" type="xs:date" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <!-- Now we need penalties for late book returns -->
+
+    <xs:complexType name="Penalty">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
 
 
 </xs:schema>
