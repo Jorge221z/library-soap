@@ -190,7 +190,7 @@ public class LibraryEndpoint {
     try {
       return DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.toString());
     } catch (Exception e) {
-      System.err.println("Failed while converting the date to xmlDate: " +  e.getMessage());
+      System.err.println("Failed while converting LocalDate to xmlDate: " +  e.getMessage());
       return null; // As the xsd contract have minOcurrs prop, return null here is safe
     }
   }

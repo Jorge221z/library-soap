@@ -61,4 +61,14 @@ public class PenaltyEntity {
   public void setAmount(long amount) {
     this.amount = amount;
   }
+
+  @Override
+  public String toString() {
+    return "PenaltyEntity{" +
+        "id=" + id +
+        ", amount=" + amount +
+        ", penaltyDate=" + penaltyDate +
+        ", loan=" + loan +
+        '}';
+  }
 }
