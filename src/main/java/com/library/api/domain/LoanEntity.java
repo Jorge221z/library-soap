@@ -23,20 +23,23 @@ public class LoanEntity {
   @JoinColumn(name = "book_id")
   private BookEntity book;
 
-  private LocalDate loanDate;
-  private LocalDate dueDate;
+  private LocalDate loanDate; // Timestamp of when the book was loaned
+  private LocalDate dueDate; // Date when the book has to be returned
+  private LocalDate returnDate; // Date when the book was returned -> reality
+
   private boolean active;
 
   public LoanEntity() {
   }
 
-  public LoanEntity(long loanId, boolean active, LocalDate dueDate, BookEntity book, StudentEntity student, LocalDate loanDate) {
+  public LoanEntity(long loanId, StudentEntity student, BookEntity book, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, boolean active) {
     this.loanId = loanId;
-    this.active = active;
-    this.dueDate = dueDate;
-    this.book = book;
     this.student = student;
+    this.book = book;
     this.loanDate = loanDate;
+    this.dueDate = dueDate;
+    this.returnDate = returnDate;
+    this.active = active;
   }
 
   public long getLoanId() {
@@ -86,4 +89,13 @@ public class LoanEntity {
   public void setActive(boolean active) {
     this.active = active;
   }
+
+  public LocalDate getReturnDate() {
+    return returnDate;
+  }
+
+  public void setReturnDate(LocalDate returnDate) {
+    this.returnDate = returnDate;
+  }
+
 }

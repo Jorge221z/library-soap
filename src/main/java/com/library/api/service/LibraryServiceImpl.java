@@ -2,9 +2,11 @@ package com.library.api.service;
 
 import com.library.api.domain.BookEntity;
 import com.library.api.domain.LoanEntity;
+import com.library.api.domain.PenaltyEntity;
 import com.library.api.domain.StudentEntity;
 import com.library.api.repository.BookRepository;
 import com.library.api.repository.LoanRepository;
+import com.library.api.repository.PenaltyRepository;
 import com.library.api.repository.StudentRepository;
 import com.library.api.service.exception.LoanException;
 import com.library.api.ws.dto.Book;
@@ -13,19 +15,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Transactional //Transactional annotation from Spring Framework
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
+  private static final long FEE_PER_DAY = 1L;
+
   BookRepository bookRepository;
   StudentRepository studentRepository;
   LoanRepository loanRepository;
+  PenaltyRepository penaltyRepository;
+
   // DI injection by Constructor
-  public LibraryServiceImpl(BookRepository bookRepository, StudentRepository studentRepository, LoanRepository loanRepository) {
+  public LibraryServiceImpl(BookRepository bookRepository, StudentRepository studentRepository,
+                            LoanRepository loanRepository, PenaltyRepository penaltyRepository)  {
     this.bookRepository = bookRepository;
     this.studentRepository = studentRepository;
     this.loanRepository = loanRepository;
+    this.penaltyRepository = penaltyRepository;
   }
 
   public Book getBookByIdentifier(String isbn) {
@@ -80,7 +89,7 @@ public class LibraryServiceImpl implements LibraryService {
   }
 
   @Override
-  public LoanEntity borrowBook(String isbn, Long Id) {
+  public LoanEntity borrowBook(String isbn, Long studentId) {
 
     // Search book
     BookEntity bookEntity = bookRepository.findByIsbn(isbn);
@@ -89,8 +98,8 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     // Get the student associated
-    StudentEntity studentEntity = studentRepository.findById(Id)
-        .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + Id));
+    StudentEntity studentEntity = studentRepository.findById(studentId)
+        .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + studentId));
 
     // Validate availability
     if (loanRepository.existsByBookAndActiveTrue(bookEntity)) {
@@ -119,11 +128,36 @@ public class LibraryServiceImpl implements LibraryService {
       throw new LoanException("Book is not borrowed and active yet");
     }
 
+    LocalDate now = LocalDate.now(); // To guarantee syncronization
+
     loanEntity.setActive(false);
-    loanEntity.setDueDate(LocalDate.now());
+    loanEntity.setReturnDate(now);
+
+    if (LocalDate.now().isAfter(loanEntity.getDueDate())) {
+      PenaltyEntity penalty = new PenaltyEntity();
+      penalty.setPenaltyDate(now);
+      penalty.setAmount(calculatePenaltyAmount(loanEntity.getDueDate(), loanEntity.getReturnDate()));
+      penalty.setLoan(loanEntity);
+
+      penaltyRepository.save(penalty);
+    }
+
     loanRepository.save(loanEntity);
 
     return loanEntity;
+  }
+
+  private long calculatePenaltyAmount(LocalDate dueDate, LocalDate returnDate) {
+    if (dueDate == null || returnDate == null) {
+      return 0;
+    }
+
+    long daysLate = ChronoUnit.DAYS.between(dueDate,  returnDate); // returnDate - dueDate
+    if (daysLate <= 0) {
+      return 0;
+    }
+
+    return daysLate * FEE_PER_DAY;
   }
 
 }
