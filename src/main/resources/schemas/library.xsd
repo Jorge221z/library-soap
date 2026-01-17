@@ -97,16 +97,6 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-
-    <!-- Now we need penalties for late book returns -->
-
-    <xs:complexType name="Penalty">
-        <xs:sequence>
-            <xs:element name="id" type="xs:long"/>
-            <xs:element name="name" type="xs:string"/>
-            <xs:element name="email" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
-
+    
 
 </xs:schema>
