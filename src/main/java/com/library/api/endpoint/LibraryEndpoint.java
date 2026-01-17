@@ -109,7 +109,15 @@ public class LibraryEndpoint {
       LoanEntity loanEntity = libraryService.borrowBook(isbn, studentId);
 
       response.setSuccess(true);
-      response.setMessage(String.format("Book %s borrowed successfully", loanEntity.getBook().getTitle()));
+      response.setMessage("""
+    Book: %s
+    Status: Borrowed successfully
+    Loan deadline: %s
+    """.formatted(
+              loanEntity.getBook().getTitle(),
+              loanEntity.getDueDate()
+          )
+      );
       response.setLoanId(loanEntity.getLoanId());
 
     } catch (Exception e) { // We must not stop the code flow
@@ -135,7 +143,7 @@ public class LibraryEndpoint {
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "returnBookRequest")
   @ResponsePayload
-  public ReturnBookResponse borrowBook(@RequestPayload @Valid ReturnBookRequest request) {
+  public ReturnBookResponse returnBook(@RequestPayload @Valid ReturnBookRequest request) {
     ReturnBookResponse response = new ReturnBookResponse();
 
     try {
@@ -143,7 +151,22 @@ public class LibraryEndpoint {
       LoanEntity loanEntity = libraryService.returnBook(loanId);
 
       response.setSuccess(true);
-      response.setMessage(String.format("Book %s returned successfully", loanEntity.getBook().getTitle()));
+
+      response.setMessage("""
+    Book: %s
+    Status: Returned successfully
+    Loan deadline: %s
+    Return date: %s
+    %s
+    """.formatted(
+              loanEntity.getBook().getTitle(),
+              loanEntity.getDueDate(),
+              loanEntity.getReturnDate(),
+              loanEntity.getPenalty() != null
+                  ? "Penalty applied. Amount: " + loanEntity.getPenalty().getAmount()
+                  : "No penalty applied."
+          )
+      );
 
       LocalDate returnDate = loanEntity.getDueDate();
       if (returnDate != null) {
@@ -162,6 +185,7 @@ public class LibraryEndpoint {
     return response;
   }
 
+  // As LocalDate objets cannot be parsed due to legacy deserializing logic convert it is needed
   private XMLGregorianCalendar toXmlDate(LocalDate localDate) {
     try {
       return DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.toString());

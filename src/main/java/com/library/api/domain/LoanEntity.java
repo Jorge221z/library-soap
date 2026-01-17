@@ -29,6 +29,10 @@ public class LoanEntity {
 
   private boolean active;
 
+  @OneToOne
+  @JoinColumn(name = "penalty_id")
+  private PenaltyEntity penalty;
+
   public LoanEntity() {
   }
 
@@ -98,4 +102,11 @@ public class LoanEntity {
     this.returnDate = returnDate;
   }
 
+  public PenaltyEntity getPenalty() {
+    return penalty;
+  }
+
+  public void setPenalty(PenaltyEntity penalty) {
+    this.penalty = penalty;
+  }
 }

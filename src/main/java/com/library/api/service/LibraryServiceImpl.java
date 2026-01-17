@@ -125,7 +125,7 @@ public class LibraryServiceImpl implements LibraryService {
         .orElseThrow(() -> new EntityNotFoundException("Loan not found with id: " + loanId));
 
     if (!loanEntity.isActive()) { // Loan not currently active
-      throw new LoanException("Book is not borrowed and active yet");
+      throw new LoanException("Book is not currently borrowed and active");
     }
 
     LocalDate now = LocalDate.now(); // To guarantee syncronization
