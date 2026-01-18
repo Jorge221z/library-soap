@@ -18,10 +18,10 @@ public class LoanEntity {
   @JoinColumn(name = "student_id", nullable = false) // Foreign key in the DB
   private StudentEntity student;
 
-  // MANY-TO-ONE RELATION: Many loans belogs to a book(historically, not currently)
+  // MANY-TO-ONE RELATION: Many loans belongs to a bookCopy (historically, not currently)
   @ManyToOne
-  @JoinColumn(name = "book_id")
-  private BookEntity book;
+  @JoinColumn(name = "book_copy_id")
+  private BookCopyEntity bookCopy;
 
   private LocalDate loanDate; // Timestamp of when the book was loaned
   private LocalDate dueDate; // Date when the book has to be returned
@@ -35,10 +35,10 @@ public class LoanEntity {
   public LoanEntity() {
   }
 
-  public LoanEntity(long loanId, StudentEntity student, BookEntity book, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, boolean active) {
+  public LoanEntity(long loanId, StudentEntity student, BookCopyEntity bookCopy, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, boolean active) {
     this.loanId = loanId;
     this.student = student;
-    this.book = book;
+    this.bookCopy = bookCopy;
     this.loanDate = loanDate;
     this.dueDate = dueDate;
     this.returnDate = returnDate;
@@ -53,12 +53,12 @@ public class LoanEntity {
     this.loanId = loanId;
   }
 
-  public BookEntity getBook() {
-    return book;
+  public BookCopyEntity getBookCopy() {
+    return bookCopy;
   }
 
-  public void setBook(BookEntity book) {
-    this.book = book;
+  public void setBookCopy(BookCopyEntity bookCopy) {
+    this.bookCopy = bookCopy;
   }
 
   public StudentEntity getStudent() {

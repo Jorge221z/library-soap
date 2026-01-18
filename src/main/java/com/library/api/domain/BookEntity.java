@@ -11,7 +11,7 @@ public class BookEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private long id;
 
   @Column(nullable = false)
   private String isbn;
@@ -25,8 +25,9 @@ public class BookEntity {
   @Column(nullable = true)
   private Integer publicationYear;
 
-  @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-  private List<LoanEntity> loans = new ArrayList<>();
+  // A book can have many copies
+  @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+  private List<BookCopyEntity> copies = new ArrayList<>();
 
   public BookEntity() {
   }
@@ -38,11 +39,11 @@ public class BookEntity {
     this.publicationYear = publicationYear;
   }
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -78,11 +79,11 @@ public class BookEntity {
     this.publicationYear = publicationYear;
   }
 
-  public List<LoanEntity> getLoans() {
-    return loans;
+  public List<BookCopyEntity> getCopies() {
+    return copies;
   }
 
-  public void setLoans(List<LoanEntity> loans) {
-    this.loans = loans;
+  public void setCopies(List<BookCopyEntity> bookCopies) {
+    this.copies = bookCopies;
   }
 }
