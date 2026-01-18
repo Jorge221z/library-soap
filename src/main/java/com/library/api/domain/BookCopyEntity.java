@@ -1,7 +1,7 @@
 package com.library.api.domain;
 
 
-import com.library.api.domain.enums.BookStatus;
+import com.library.api.domain.enums.BookCopyStatus;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class BookCopyEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private BookStatus status;
+  private BookCopyStatus status;
 
   // Many copies of a book belongs to a 'real' book
   @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class BookCopyEntity {
   public BookCopyEntity() {
   }
 
-  public BookCopyEntity(BookEntity book, BookStatus status, String barcode) {
+  public BookCopyEntity(BookEntity book, BookCopyStatus status, String barcode) {
     this.book = book;
     this.status = status;
     this.barcode = barcode;
@@ -54,11 +54,11 @@ public class BookCopyEntity {
     this.book = book;
   }
 
-  public BookStatus getStatus() {
+  public BookCopyStatus getStatus() {
     return status;
   }
 
-  public void setStatus(BookStatus status) {
+  public void setStatus(BookCopyStatus status) {
     this.status = status;
   }
 
