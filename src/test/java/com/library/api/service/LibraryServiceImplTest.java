@@ -123,11 +123,10 @@ class LibraryServiceImplTest {
 
   // CASE 5: Return Book Happy Path
   @Test
-  @Disabled
   void returnBook_ShouldReturnLoan_WhenDataIsCorrect() {
     String isbn = "978-3-16-148410-0";
     BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
-    Long studentId = 4L;
+    long studentId = 4L;
     StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
 
     Long loanId = 7L;
@@ -136,6 +135,7 @@ class LibraryServiceImplTest {
     loanEntity.setStudent(studentEntity);
     loanEntity.setLoanId(loanId);
     loanEntity.setActive(true);
+    loanEntity.setDueDate(LocalDate.now());
 
     when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
 
