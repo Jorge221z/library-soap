@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface BookCopyRepository extends JpaRepository<BookCopyEntity, Long> {
 
-  List<BookCopyEntity> findByBookIsbnAndStatus(BookEntity book, BookCopyStatus status);
+  // Search for copies where the associated Book entity has the ISBN and STATUS sent as params
+  List<BookCopyEntity> findByBookIsbnAndStatus(String isbn, BookCopyStatus status);
 
 }

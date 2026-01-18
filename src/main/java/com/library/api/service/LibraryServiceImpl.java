@@ -1,13 +1,8 @@
 package com.library.api.service;
 
-import com.library.api.domain.BookEntity;
-import com.library.api.domain.LoanEntity;
-import com.library.api.domain.PenaltyEntity;
-import com.library.api.domain.StudentEntity;
-import com.library.api.repository.BookRepository;
-import com.library.api.repository.LoanRepository;
-import com.library.api.repository.PenaltyRepository;
-import com.library.api.repository.StudentRepository;
+import com.library.api.domain.*;
+import com.library.api.domain.enums.BookCopyStatus;
+import com.library.api.repository.*;
 import com.library.api.service.exception.LoanException;
 import com.library.api.ws.dto.Book;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Transactional //Transactional annotation from Spring Framework
 @Service
@@ -27,14 +23,17 @@ public class LibraryServiceImpl implements LibraryService {
   StudentRepository studentRepository;
   LoanRepository loanRepository;
   PenaltyRepository penaltyRepository;
+  BookCopyRepository bookCopyRepository;
 
   // DI injection by Constructor
   public LibraryServiceImpl(BookRepository bookRepository, StudentRepository studentRepository,
-                            LoanRepository loanRepository, PenaltyRepository penaltyRepository)  {
+                            LoanRepository loanRepository, PenaltyRepository penaltyRepository,
+                            BookCopyRepository bookCopyRepository)  {
     this.bookRepository = bookRepository;
     this.studentRepository = studentRepository;
     this.loanRepository = loanRepository;
     this.penaltyRepository = penaltyRepository;
+    this.bookCopyRepository = bookCopyRepository;
   }
 
   public Book getBookByIdentifier(String isbn) {
@@ -103,20 +102,26 @@ public class LibraryServiceImpl implements LibraryService {
       throw new EntityNotFoundException("Book not found with ISBN: " + isbn);
     }
 
+    // Search for available book copies
+    List<BookCopyEntity> copies = bookCopyRepository.findByBookIsbnAndStatus(isbn, BookCopyStatus.AVAILABLE);
+    if (copies.isEmpty()) {
+      throw new LoanException("No available copies found for book: " + bookEntity.getTitle());
+    }
+
+    BookCopyEntity bookCopy = copies.get(0);
+    bookCopy.setStatus(BookCopyStatus.LOANED);
+    bookCopyRepository.save(bookCopy);
+
     // Get the student associated
     StudentEntity studentEntity = studentRepository.findById(studentId)
         .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + studentId));
 
-    // Validate availability
-    if (loanRepository.existsByBookAndActiveTrue(bookEntity)) {
-      throw new LoanException("Book is already borrowed and active");
-    }
 
     LoanEntity loanEntity = new LoanEntity();
-    loanEntity.setBook(bookEntity);
+    loanEntity.setBookCopy(bookCopy);
     loanEntity.setStudent(studentEntity);
     loanEntity.setLoanDate(LocalDate.now());
-    loanEntity.setDueDate(LocalDate.now());
+    loanEntity.setDueDate(LocalDate.now().plusDays(14));
     loanEntity.setActive(true);
 
     loanRepository.save(loanEntity);
@@ -138,6 +143,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     loanEntity.setActive(false);
     loanEntity.setReturnDate(now);
+    loanEntity.getBookCopy().setStatus(BookCopyStatus.AVAILABLE);
 
     if (now.isAfter(loanEntity.getDueDate())) {
       PenaltyEntity penalty = new PenaltyEntity();

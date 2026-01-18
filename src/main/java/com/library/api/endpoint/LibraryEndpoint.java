@@ -114,7 +114,7 @@ public class LibraryEndpoint {
     Status: Borrowed successfully
     Loan deadline: %s
     """.formatted(
-              loanEntity.getBook().getTitle(),
+              loanEntity.getBookCopy().getBook().getTitle(),
               loanEntity.getDueDate()
           )
       );
@@ -159,7 +159,7 @@ public class LibraryEndpoint {
     Return date: %s
     %s
     """.formatted(
-              loanEntity.getBook().getTitle(),
+              loanEntity.getBookCopy().getBook().getTitle(),
               loanEntity.getDueDate(),
               loanEntity.getReturnDate(),
               loanEntity.getPenalty() != null
