@@ -55,11 +55,17 @@ public class LibraryServiceImpl implements LibraryService {
 
   @Override
   public Book createBook(Book bookDto) {
+    if (bookDto == null) {
+      return null;
+    }
 
     BookEntity book = convertDtoToEntity(bookDto);
 
-    bookRepository.save(book);
+    if (bookRepository.findByIsbn(book.getIsbn()) != null) {
+      throw new RuntimeException("A book with the same ISBN already exists");
+    }
 
+    bookRepository.save(book);
     return convertEntityToDto(book);
   }
 
@@ -146,7 +152,6 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     loanRepository.save(loanEntity);
-
     return loanEntity;
   }
 
