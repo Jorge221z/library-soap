@@ -29,8 +29,7 @@ public class LoanEntity {
 
   private boolean active;
 
-  @OneToOne
-  @JoinColumn(name = "penalty_id")
+  @OneToOne(mappedBy = "loan") // Use the loan attribute to connect with the associated penalty
   private PenaltyEntity penalty;
 
   public LoanEntity() {

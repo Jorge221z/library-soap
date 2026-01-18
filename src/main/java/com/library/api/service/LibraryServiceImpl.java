@@ -109,8 +109,8 @@ public class LibraryServiceImpl implements LibraryService {
     LoanEntity loanEntity = new LoanEntity();
     loanEntity.setBook(bookEntity);
     loanEntity.setStudent(studentEntity);
-    loanEntity.setLoanDate(LocalDate.of(2026, 1, 1));
-    loanEntity.setDueDate(LocalDate.of(2026, 1, 10));
+    loanEntity.setLoanDate(LocalDate.now());
+    loanEntity.setDueDate(LocalDate.now());
     loanEntity.setActive(true);
 
     loanRepository.save(loanEntity);
@@ -137,7 +137,10 @@ public class LibraryServiceImpl implements LibraryService {
       PenaltyEntity penalty = new PenaltyEntity();
       penalty.setPenaltyDate(now);
       penalty.setAmount(calculatePenaltyAmount(loanEntity.getDueDate(), loanEntity.getReturnDate()));
+
+      // Associate loan and penalty
       penalty.setLoan(loanEntity);
+      loanEntity.setPenalty(penalty);
 
       penaltyRepository.save(penalty);
     }
