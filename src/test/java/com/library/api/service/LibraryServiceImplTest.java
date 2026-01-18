@@ -5,6 +5,7 @@ import com.library.api.domain.LoanEntity;
 import com.library.api.domain.StudentEntity;
 import com.library.api.repository.BookRepository;
 import com.library.api.repository.LoanRepository;
+import com.library.api.repository.PenaltyRepository;
 import com.library.api.repository.StudentRepository;
 import com.library.api.service.exception.LoanException;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,8 @@ class LibraryServiceImplTest {
   private StudentRepository studentRepository;
   @Mock
   private LoanRepository loanRepository;
+  @Mock
+  private PenaltyRepository penaltyRepository;
 
   // Instance our real service and inject the above mocks
   @InjectMocks
@@ -182,6 +185,59 @@ class LibraryServiceImplTest {
 
     verify(loanRepository, times(1)).findById(loanId);
     verify(loanRepository, never()).save(any(LoanEntity.class));
+  }
+
+  // CASE 8: Penalty test Happy path
+  @Test
+  void returnBook_ShouldCreatePenalty_WhenIsLate() {
+    Long loanId = 7L;
+    LoanEntity loanEntity = new LoanEntity();
+    loanEntity.setLoanId(loanId);
+    loanEntity.setDueDate(LocalDate.now().minusDays(3));
+    loanEntity.setActive(true);
+
+    when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
+
+    LoanEntity result = libraryService.returnBook(loanId);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(loanEntity.getDueDate(), result.getDueDate());
+    Assertions.assertEquals(loanEntity.getDueDate(), result.getDueDate());
+
+    // Penalty logic checks
+    Assertions.assertNotNull(loanEntity.getPenalty());
+    Assertions.assertEquals(3.0, loanEntity.getPenalty().getAmount()); // 3 days late = 3.0 as fee
+
+    // Loan and penalty relations check
+    Assertions.assertEquals(result.getPenalty().getLoan().getLoanId(), result.getLoanId());
+
+    verify(penaltyRepository, times(1)).save(any());
+    verify(loanRepository, times(1)).findById(loanId);
+  }
+
+  // CASE 9: Penalty test -> book returned on the same day(or before) of the loan deadline
+  @Test
+  void returnBook_ShouldNotCreatePenalty_WhenIsOnTime() {
+    Long loanId = 7L;
+    LoanEntity loanEntity = new LoanEntity();
+    loanEntity.setLoanId(loanId);
+    loanEntity.setActive(true);
+
+    // Return it on the last day should be OK and not create a penalty
+    loanEntity.setDueDate(LocalDate.now());
+
+    when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
+
+    LoanEntity result = libraryService.returnBook(loanId);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(loanEntity.getLoanDate(), result.getLoanDate());
+    Assertions.assertEquals(loanEntity.getDueDate(), result.getDueDate());
+
+    Assertions.assertNull(result.getPenalty());
+
+    verify(loanRepository, times(1)).findById(loanId);
+    verify(penaltyRepository, never()).save(any());
   }
 
 }
