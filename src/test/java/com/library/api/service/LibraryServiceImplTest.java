@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,7 +105,13 @@ class LibraryServiceImplTest {
     BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
     Long studentId = 4L;
 
+    BookCopyEntity bookCopyEntity = new BookCopyEntity();
+    bookCopyEntity.setId(10L);
+    bookCopyEntity.setBook(bookEntity);
+    bookCopyEntity.setStatus(BookCopyStatus.AVAILABLE);
+
     when(bookRepository.findByIsbn(isbn)).thenReturn(bookEntity);
+    when(bookCopyRepository.findByBookIsbnAndStatus(isbn, BookCopyStatus.AVAILABLE)).thenReturn(List.of(bookCopyEntity));
     when(studentRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     Assertions.assertThrows(EntityNotFoundException.class, () -> libraryService.borrowBook(isbn, studentId));
@@ -114,24 +121,22 @@ class LibraryServiceImplTest {
     verify(loanRepository, times(0)).save(any(LoanEntity.class));
   }
 
-  // CASE 4: Book already loaned (business logic)
+  // CASE 4: Book copy already loaned (business logic)
   @Test
-  void borrowBook_ShouldThrowLoanException_WhenBookIsAlreadyActive() {
+  void borrowBook_ShouldThrowLoanException_WhenNoCopiesAvailable() {
     String isbn = "978-3-16-148410-0";
     long studentId = 4L;
     BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
     StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
 
     when(bookRepository.findByIsbn(isbn)).thenReturn(bookEntity);
-    when(studentRepository.findById(studentId)).thenReturn(Optional.of(studentEntity));
-    //when(loanRepository.existsByBookAndActiveTrue(bookEntity)).thenReturn(true); // 'true' means that book is already loaned
+    when(bookCopyRepository.findByBookIsbnAndStatus(isbn, BookCopyStatus.AVAILABLE)).thenReturn(Collections.emptyList()); //empty
 
     Assertions.assertThrows(LoanException.class, () -> libraryService.borrowBook(isbn, studentId));
 
     verify(loanRepository, never()).save(any(LoanEntity.class)); // as the book was already loaned no saving method were called
-
     verify(bookRepository, times(1)).findByIsbn(isbn);
-    verify(studentRepository, times(1)).findById(studentId);
+    verify(studentRepository, never()).findById(studentId);
   }
 
   // CASE 5: Return Book Happy Path
@@ -142,9 +147,14 @@ class LibraryServiceImplTest {
     long studentId = 4L;
     StudentEntity studentEntity = new StudentEntity(studentId, "Jorge", "jorge@library.com", null);
 
+    BookCopyEntity bookCopyEntity = new BookCopyEntity();
+    bookCopyEntity.setId(10L);
+    bookCopyEntity.setBook(bookEntity);
+    bookCopyEntity.setStatus(BookCopyStatus.LOANED);
+
     Long loanId = 7L;
     LoanEntity loanEntity = new LoanEntity(); // Use this to 'train' the mocks
-    //loanEntity.setBook(bookEntity);
+    loanEntity.setBookCopy(bookCopyEntity);
     loanEntity.setStudent(studentEntity);
     loanEntity.setLoanId(loanId);
     loanEntity.setActive(true);
@@ -154,18 +164,18 @@ class LibraryServiceImplTest {
 
     LoanEntity result = libraryService.returnBook(loanId);
 
-    Assertions.assertNotNull(loanEntity);
-    //Assertions.assertNotNull(loanEntity.getBook());
-    //Assertions.assertEquals(isbn, loanEntity.getBook().getIsbn());
-    //Assertions.assertEquals(bookEntity, loanEntity.getBook());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(result.getBookCopy().getBook().getIsbn(), loanEntity.getBookCopy().getBook().getIsbn());
+    Assertions.assertEquals(bookEntity, result.getBookCopy().getBook());
 
     // Important: check state changes
     Assertions.assertFalse(loanEntity.isActive());
-    Assertions.assertNotNull(loanEntity.getDueDate());
-    Assertions.assertEquals(LocalDate.now(), result.getDueDate());
+    Assertions.assertEquals(LocalDate.now(), loanEntity.getReturnDate());
+    Assertions.assertSame(BookCopyStatus.AVAILABLE, result.getBookCopy().getStatus());
 
     verify(loanRepository, times(1)).findById(loanId);
     verify(loanRepository, times(1)).save(any(LoanEntity.class));
+    verify(penaltyRepository, never()).save(any());
   }
 
   // CASE 6: Loan with the given loanId not exist
@@ -200,19 +210,26 @@ class LibraryServiceImplTest {
   // CASE 8: Penalty test Happy path
   @Test
   void returnBook_ShouldCreatePenalty_WhenIsLate() {
+    String isbn = "978-3-16-148410-0";
+    BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
+
+    BookCopyEntity bookCopyEntity = new BookCopyEntity();
+    bookCopyEntity.setId(10L);
+    bookCopyEntity.setBook(bookEntity);
+    bookCopyEntity.setStatus(BookCopyStatus.LOANED);
+
     Long loanId = 7L;
     LoanEntity loanEntity = new LoanEntity();
     loanEntity.setLoanId(loanId);
     loanEntity.setDueDate(LocalDate.now().minusDays(3));
     loanEntity.setActive(true);
+    loanEntity.setBookCopy(bookCopyEntity);
 
     when(loanRepository.findById(loanId)).thenReturn(Optional.of(loanEntity));
 
     LoanEntity result = libraryService.returnBook(loanId);
 
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(loanEntity.getDueDate(), result.getDueDate());
-    Assertions.assertEquals(loanEntity.getDueDate(), result.getDueDate());
 
     // Penalty logic checks
     Assertions.assertNotNull(loanEntity.getPenalty());
@@ -228,10 +245,19 @@ class LibraryServiceImplTest {
   // CASE 9: Penalty test -> book returned on the same day(or before) of the loan deadline
   @Test
   void returnBook_ShouldNotCreatePenalty_WhenIsOnTime() {
+    String isbn = "978-3-16-148410-0";
+    BookEntity bookEntity = new BookEntity(isbn, "El Camino", "Bukowski", 2010);
+
+    BookCopyEntity bookCopyEntity = new BookCopyEntity();
+    bookCopyEntity.setId(10L);
+    bookCopyEntity.setBook(bookEntity);
+    bookCopyEntity.setStatus(BookCopyStatus.LOANED);
+
     Long loanId = 7L;
     LoanEntity loanEntity = new LoanEntity();
     loanEntity.setLoanId(loanId);
     loanEntity.setActive(true);
+    loanEntity.setBookCopy(bookCopyEntity);
 
     // Return it on the last day should be OK and not create a penalty
     loanEntity.setDueDate(LocalDate.now());
