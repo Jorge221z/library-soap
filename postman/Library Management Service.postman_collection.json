@@ -1,0 +1,314 @@
+{
+	"info": {
+		"_postman_id": "e17f1a23-a49b-4b37-b0d0-903cf4f4c5a6",
+		"name": "Library Management Service",
+		"description": "\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46308083"
+	},
+	"item": [
+		{
+			"name": "createBook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"\n               xmlns:tns=\"http://api.library.com/soap\">\n    <soap:Body>\n        <tns:createBook>\n            <book>\n                <isbn>978-3-456789-01-2</isbn> \n                <title>Microservices Architecture</title>\n                <authorName>John Doe</authorName>\n                <publicationYear>2023</publicationYear>\n            </book>\n        </tns:createBook>\n    </soap:Body>\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/library-soap/services/LibraryService",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"library-soap",
+						"services",
+						"LibraryService"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getBook response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookRequest xmlns=\"http://api.library.com/ws\">\n      <tns:isbn>string</tns:isbn>\n    </tns:getBookRequest>\n  </soap:Body>\n</soap:Envelope>\n",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "/ws",
+							"path": [
+								"ws"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "xml",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/xml; charset=utf-8"
+						}
+					],
+					"cookie": [],
+					"body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookResponse xmlns=\"http://api.library.com/ws\">\n      <tns:book>\n        <tns:isbn>string</tns:isbn>\n        <tns:title>string</tns:title>\n        <tns:authorName>string</tns:authorName>\n        <tns:publicationYear>100</tns:publicationYear>\n      </tns:book>\n    </tns:getBookResponse>\n  </soap:Body>\n</soap:Envelope>\n"
+				}
+			]
+		},
+		{
+			"name": "getBook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"\n               xmlns:tns=\"http://api.library.com/soap\"> <soap:Body>\n        <tns:getBook>\n            <isbn>978-3-456789-01-2</isbn>\n        </tns:getBook>\n    </soap:Body>\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/library-soap/services/LibraryService",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"library-soap",
+						"services",
+						"LibraryService"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getBook response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookRequest xmlns=\"http://api.library.com/ws\">\n      <tns:isbn>string</tns:isbn>\n    </tns:getBookRequest>\n  </soap:Body>\n</soap:Envelope>\n",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "/ws",
+							"path": [
+								"ws"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "xml",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/xml; charset=utf-8"
+						}
+					],
+					"cookie": [],
+					"body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookResponse xmlns=\"http://api.library.com/ws\">\n      <tns:book>\n        <tns:isbn>string</tns:isbn>\n        <tns:title>string</tns:title>\n        <tns:authorName>string</tns:authorName>\n        <tns:publicationYear>100</tns:publicationYear>\n      </tns:book>\n    </tns:getBookResponse>\n  </soap:Body>\n</soap:Envelope>\n"
+				}
+			]
+		},
+		{
+			"name": "borrowBook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"\n               xmlns:tns=\"http://api.library.com/soap\">\n    <soap:Body>\n        <tns:borrowBook>\n            <isbn>978-3-456789-01-2</isbn>\n            <studentId>1</studentId>\n        </tns:borrowBook>\n    </soap:Body>\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/library-soap/services/LibraryService",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"library-soap",
+						"services",
+						"LibraryService"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getBook response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookRequest xmlns=\"http://api.library.com/ws\">\n      <tns:isbn>string</tns:isbn>\n    </tns:getBookRequest>\n  </soap:Body>\n</soap:Envelope>\n",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "/ws",
+							"path": [
+								"ws"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "xml",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/xml; charset=utf-8"
+						}
+					],
+					"cookie": [],
+					"body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookResponse xmlns=\"http://api.library.com/ws\">\n      <tns:book>\n        <tns:isbn>string</tns:isbn>\n        <tns:title>string</tns:title>\n        <tns:authorName>string</tns:authorName>\n        <tns:publicationYear>100</tns:publicationYear>\n      </tns:book>\n    </tns:getBookResponse>\n  </soap:Body>\n</soap:Envelope>\n"
+				}
+			]
+		},
+		{
+			"name": "returnBook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"\n               xmlns:tns=\"http://api.library.com/soap\">\n    <soap:Body>\n        <tns:returnBook>\n            <loanId>1</loanId>\n        </tns:returnBook>\n    </soap:Body>\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/library-soap/services/LibraryService",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"library-soap",
+						"services",
+						"LibraryService"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getBook response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookRequest xmlns=\"http://api.library.com/ws\">\n      <tns:isbn>string</tns:isbn>\n    </tns:getBookRequest>\n  </soap:Body>\n</soap:Envelope>\n",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "/ws",
+							"path": [
+								"ws"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "xml",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/xml; charset=utf-8"
+						}
+					],
+					"cookie": [],
+					"body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <tns:getBookResponse xmlns=\"http://api.library.com/ws\">\n      <tns:book>\n        <tns:isbn>string</tns:isbn>\n        <tns:title>string</tns:title>\n        <tns:authorName>string</tns:authorName>\n        <tns:publicationYear>100</tns:publicationYear>\n      </tns:book>\n    </tns:getBookResponse>\n  </soap:Body>\n</soap:Envelope>\n"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "LibraryPortSoap11BaseUrl",
+			"value": "",
+			"type": "any"
+		}
+	]
+}
