@@ -45,8 +45,7 @@ public class LibraryServiceImpl implements LibraryService {
     BookEntity bookEntity = bookRepository.findByIsbn(isbn);
 
     if (bookEntity == null) {
-      bookEntity = new BookEntity(isbn, "The Spring Journey with Gemini", "J.M.C Mentor", 2025);
-      bookEntity = bookRepository.save(bookEntity);
+      throw new EntityNotFoundException("Book with ISBN " + isbn + " not found");
     }
 
     return convertEntityToDto(bookEntity);
@@ -63,6 +62,15 @@ public class LibraryServiceImpl implements LibraryService {
     if (bookRepository.findByIsbn(book.getIsbn()) != null) {
       throw new RuntimeException("A book with the same ISBN already exists");
     }
+
+    // Create a phisic copy automatically
+    // As BookEntity has CascadeType.ALL, while we save the book the copy also gets saved.
+    BookCopyEntity automaticCopy = new BookCopyEntity();
+    automaticCopy.setBook(book);
+    automaticCopy.setStatus(BookCopyStatus.AVAILABLE);
+    automaticCopy.setBarcode("AUTO-" + book.getIsbn());
+
+    book.getCopies().add(automaticCopy);
 
     bookRepository.save(book);
     return convertEntityToDto(book);
