@@ -1,7 +1,8 @@
 # Library SOAP Service (Legacy Architecture Training)
 
 This project is a SOAP Web Service for library management, built using Spring Framework (Classic), Apache CXF, JPA/Hibernate, and an H2 in-memory database.
-<br>It demonstrates a Code-First approach to SOAP development using JAX-WS standards.
+
+It demonstrates a Code-First approach to SOAP development using JAX-WS standards.
 
 ## How to Run the Project
 
