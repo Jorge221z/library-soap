@@ -33,68 +33,67 @@ Configure your HTTP client (Postman or SoapUI) to send a **POST** request to the
 Content-Type: text/xml
 ```
 
-### 1. Create a Book (CreateBook)
+### 1. Create a Book (createBook)
 
 **Description:** Registers a new book in the catalog.
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/ws">
+               xmlns:tns="http://api.library.com/soap">
     <soap:Body>
-        <tns:createBookRequest>
-            <tns:book>
-                <tns:isbn>978-3-456789-01-2</tns:isbn>
-                <tns:title>Java Enterprise Architecture</tns:title>
-                <tns:authorName>Jorge Dev</tns:authorName>
-                <tns:publicationYear>2025</tns:publicationYear>
-            </tns:book>
-        </tns:createBookRequest>
+        <tns:createBook>
+            <book>
+                <isbn>978-3-456789-01-2</isbn> 
+                <title>Microservices Architecture</title>
+                <authorName>John Doe</authorName>
+                <publicationYear>2023</publicationYear>
+            </book>
+        </tns:createBook>
     </soap:Body>
 </soap:Envelope>
 ```
 
-### 2. Get Book Details (GetBook)
+### 2. Get Book Details (getBook)
 
 **Description:** Retrieves book details by ISBN.
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/ws">
-    <soap:Body>
-        <tns:getBookRequest>
-            <tns:isbn>978-3-456789-01-2</tns:isbn>
-        </tns:getBookRequest>
+               xmlns:tns="http://api.library.com/soap"> <soap:Body>
+        <tns:getBook>
+            <isbn>978-3-456789-01-2</isbn>
+        </tns:getBook>
     </soap:Body>
 </soap:Envelope>
 ```
 
-### 3. Borrow a Book (BorrowBook)
+### 3. Borrow a Book (borrowBook)
 
 **Description:** Borrows a book for an existing student.
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/ws">
+               xmlns:tns="http://api.library.com/soap">
     <soap:Body>
-        <tns:borrowBookRequest>
-            <tns:isbn>978-3-456789-01-2</tns:isbn>
-            <tns:studentId>1</tns:studentId>
-        </tns:borrowBookRequest>
+        <tns:borrowBook>
+            <isbn>978-3-456789-01-2</isbn>
+            <studentId>1</studentId>
+        </tns:borrowBook>
     </soap:Body>
 </soap:Envelope>
 ```
 
-### 4. Return a Book (ReturnBook)
+### 4. Return a Book (returnBook)
 
 **Description:** Return an already loaned book.
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/ws">
+               xmlns:tns="http://api.library.com/soap">
     <soap:Body>
-        <tns:returnBookRequest>
-            <tns:loanId>1</tns:loanId>
-        </tns:returnBookRequest>
+        <tns:returnBook>
+            <loanId>1</loanId>
+        </tns:returnBook>
     </soap:Body>
 </soap:Envelope>
 ```
