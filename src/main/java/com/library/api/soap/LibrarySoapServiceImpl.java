@@ -8,7 +8,9 @@ import jakarta.jws.WebService;
 import org.springframework.stereotype.Component;
 
 @Component
-@WebService(endpointInterface = "com.library.api.soap.LibrarySoapService", serviceName = "LibraryService")
+@WebService(endpointInterface = "com.library.api.soap.LibrarySoapService",
+    serviceName = "LibraryService",
+    targetNamespace = "http://api.library.com/soap")
 public class LibrarySoapServiceImpl implements LibrarySoapService {
 
   // This class replicates our old LibraryEnpoint.
