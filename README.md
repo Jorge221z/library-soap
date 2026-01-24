@@ -59,7 +59,8 @@ Content-Type: text/xml
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:tns="http://api.library.com/soap"> <soap:Body>
+               xmlns:tns="http://api.library.com/soap">
+    <soap:Body>
         <tns:getBook>
             <isbn>978-3-456789-01-2</isbn>
         </tns:getBook>
