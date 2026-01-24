@@ -45,7 +45,7 @@ public class BookDto implements Serializable {
     this.title = title;
   }
 
-  public int getPublicationYear() {
+  public Integer getPublicationYear() {
     return publicationYear;
   }
 
