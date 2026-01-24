@@ -29,16 +29,17 @@
       <artifactId>spring-web</artifactId>
       <version>${spring.version}</version>
     </dependency>
+
+    <!-- Apache CXF -->
     <dependency>
-      <groupId>org.springframework.ws</groupId>
-      <artifactId>spring-ws-core</artifactId>
-      <version>4.0.0</version>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>4.0.9</version>
     </dependency>
-    <!-- WSDL4J for generating WSDL -->
     <dependency>
-      <groupId>wsdl4j</groupId>
-      <artifactId>wsdl4j</artifactId>
-      <version>1.6.3</version>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>4.0.9</version>
     </dependency>
 
     <dependency>
@@ -81,14 +82,14 @@
       <version>3.0.2</version>
     </dependency>
 
-    <!-- Hibernate Validator (implementación) -->
+    <!-- Hibernate Validator (implementation) -->
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>8.0.1.Final</version>
     </dependency>
 
-    <!-- Expression Language (requerido por Hibernate Validator) -->
+    <!-- Expression Language (required by HibernateValidator) -->
     <dependency>
       <groupId>org.glassfish.expressly</groupId>
       <artifactId>expressly</artifactId>
@@ -131,26 +132,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jaxb2-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>xjc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <sources>
-            <source>src/main/resources/schemas/library.xsd</source>
-          </sources>
-          <outputDirectory>${project.build.directory}/generated-sources/jaxb</outputDirectory>
-          <packageName>com.library.api.ws.dto</packageName>
-          <clearOutputDir>false</clearOutputDir>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
