@@ -1,15 +1,15 @@
 package com.library.api.service;
 
 import com.library.api.domain.LoanEntity;
-import com.library.api.ws.dto.Book;
+import com.library.api.dto.BookDto;
 
 public interface LibraryService {
 
   // Interface based on the logic defined in library.xsd
 
-  Book getBookByIdentifier(String isbn);
+  BookDto getBookByIdentifier(String isbn);
 
-  Book createBook(Book bookDto);
+  BookDto createBook(BookDto bookDto);
 
   LoanEntity borrowBook(String isbn, Long Id);
 

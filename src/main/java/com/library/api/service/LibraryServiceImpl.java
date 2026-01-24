@@ -4,7 +4,7 @@ import com.library.api.domain.*;
 import com.library.api.domain.enums.BookCopyStatus;
 import com.library.api.repository.*;
 import com.library.api.service.exception.LoanException;
-import com.library.api.ws.dto.Book;
+import com.library.api.dto.BookDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +36,7 @@ public class LibraryServiceImpl implements LibraryService {
     this.bookCopyRepository = bookCopyRepository;
   }
 
-  public Book getBookByIdentifier(String isbn) {
+  public BookDto getBookByIdentifier(String isbn) {
     if (isbn == null) {
       return null;
     }
@@ -53,7 +53,7 @@ public class LibraryServiceImpl implements LibraryService {
   }
 
   @Override
-  public Book createBook(Book bookDto) {
+  public BookDto createBook(BookDto bookDto) {
     if (bookDto == null) {
       return null;
     }
@@ -70,8 +70,8 @@ public class LibraryServiceImpl implements LibraryService {
 
 
 
-  private Book convertEntityToDto(BookEntity entity) {
-    Book dto = new Book();
+  private BookDto convertEntityToDto(BookEntity entity) {
+    BookDto dto = new BookDto();
 
     // The DTO (Book) does not have a database ID
     dto.setIsbn(entity.getIsbn());
@@ -82,7 +82,7 @@ public class LibraryServiceImpl implements LibraryService {
     return dto;
   }
 
-  private BookEntity convertDtoToEntity(Book dto) {
+  private BookEntity convertDtoToEntity(BookDto dto) {
     BookEntity entity = new BookEntity();
 
     entity.setIsbn(dto.getIsbn());
