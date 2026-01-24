@@ -1,6 +1,7 @@
 # Library SOAP Service (Legacy Architecture Training)
 
-This project is a SOAP Web Service for library management, built using Spring Framework (Classic), JPA/Hibernate, and an H2 in-memory database.
+This project is a SOAP Web Service for library management, built using Spring Framework (Classic), Apache CXF, JPA/Hibernate, and an H2 in-memory database.
+<br>It demonstrates a Code-First approach to SOAP development using JAX-WS standards.
 
 ## How to Run the Project
 
@@ -18,12 +19,16 @@ mvn clean package
 
 Once deployed, the service is available at:
 
+* **Services Dashboard:**
+  [http://localhost:8080/library-soap/services](http://localhost:8080/library-soap/services)
+  *(List all active SOAP endpoints*
+
 * **WSDL (Contract):**
-  [http://localhost:8080/library-soap/ws/libraryService.wsdl](http://localhost:8080/library-soap/ws/libraryService.wsdl)
+  [http://localhost:8080/library-soap/services/LibraryService?wsdl](http://localhost:8080/library-soap/services/LibraryService?wsdl)
   *(Use this URL to import the service into Postman or SOAP UI)*
 
 * **SOAP Endpoint:**
-  [http://localhost:8080/library-soap/ws](http://localhost:8080/library-soap/ws)
+  [http://localhost:8080/library-soap/services/LibraryService](http://localhost:8080/library-soap/services/LibraryService)
 
 ## Request Examples (SOAP)
 
@@ -36,6 +41,8 @@ Content-Type: text/xml
 ### 1. Create a Book (createBook)
 
 **Description:** Registers a new book in the catalog.
+
+**Body:**
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
@@ -57,6 +64,8 @@ Content-Type: text/xml
 
 **Description:** Retrieves book details by ISBN.
 
+**Body:**
+
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
                xmlns:tns="http://api.library.com/soap">
@@ -71,6 +80,8 @@ Content-Type: text/xml
 ### 3. Borrow a Book (borrowBook)
 
 **Description:** Borrows a book for an existing student.
+
+**Body:**
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
@@ -87,6 +98,8 @@ Content-Type: text/xml
 ### 4. Return a Book (returnBook)
 
 **Description:** Return an already loaned book.
+
+**Body:**
 
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
@@ -116,11 +129,12 @@ This project follows a **classic layered architecture**, commonly found in legac
 
 ### Architectural Characteristics
 
-- **SOAP-based communication** using WSDL-first contracts.
+- **SOAP-based communication** using **Apache CXF** (Code-First approach).
+- **JAX-WS Standards:** Uses `@WebService` annotations to define the contract directly in Java interfaces.
 - **Monolithic deployment** packaged as a `.war` file.
 - **Application Server–dependent** execution (Apache Tomcat).
-- **XML-based configuration** combined with annotation-driven components.
-- **Stateful persistence layer** using JPA/Hibernate.intended for:
+- **XML-based configuration** (`web.xml`, `applicationContext.xml`) combined with annotation-driven components.
+- **Stateful persistence layer** using JPA/Hibernate.
 
 ### Purpose of This Architecture
 
