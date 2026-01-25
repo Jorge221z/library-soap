@@ -12,32 +12,39 @@ This project is a SOAP Web Service for library management, built using Spring Fr
 It demonstrates a Code-First approach to SOAP development using JAX-WS standards.
 
 
-## How to Run the Project (With Docker)
+## How to Run the Project (With Docker 🐳)
 
-1. **Requirements:** Linux: Docker / Windows11: Docker Desktop + WSL2  
-2. Run the following command inside the root of the project to build the image:
+**Requirements:**
+* **Linux:** Docker Engine
+* **Windows:** Docker Desktop + WSL2
+
+### 1. Build the Image
+Run the following command inside the root of the project:
 
 ```bash
 docker build -t library-soap .
 ```
 
-3. Execute the image and build the container:
+### 2. Run the Container
+Execute the image in the background, exposing port 8080:
 
 ```bash
 docker run -d -p 8080:8080 --name library-container library-soap
 ```
 
+Visit: [http://localhost:8080/library-soap/services](http://localhost:8080/library-soap/services)
+
 ## How to Run the Project (Manually)
 
-1. **Requirements:** Java 17, Maven 3.8+, Tomcat 10+
-2. Run the following command:
+**Requirements:** Java 17, Maven 3.8+, Tomcat 10+
+1. Run the following command:
 
 ```bash
 mvn clean package
 ```
 
-3. Deploy the generated `.war` file to your Tomcat server.
-4. The application context path is `/library-soap`.
+2. Deploy the generated `.war` file to your Tomcat server.
+3. The application context path is `/library-soap`.
 
 ## Endpoints and WSDL
 
