@@ -1,10 +1,30 @@
 # Library SOAP Service (Legacy Architecture Training)
 
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring](https://img.shields.io/badge/Spring-Framework-green)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+
 This project is a SOAP Web Service for library management, built using Spring Framework (Classic), Apache CXF, JPA/Hibernate, and an H2 in-memory database.
 
 It demonstrates a Code-First approach to SOAP development using JAX-WS standards.
 
-## How to Run the Project
+
+## How to Run the Project (With Docker)
+
+1. **Requirements:** Linux: Docker / Windows11: Docker Desktop + WSL2  
+2. Run the following command inside the root of the project to build the image:
+
+```bash
+docker build -t library-soap .
+```
+
+3. Execute the image and build the container:
+
+```bash
+docker run -d -p 8080:8080 --name library-container library-soap
+```
+
+## How to Run the Project (Manually)
 
 1. **Requirements:** Java 17, Maven 3.8+, Tomcat 10+
 2. Run the following command:
