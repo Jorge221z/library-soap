@@ -2,7 +2,10 @@
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring](https://img.shields.io/badge/Spring-Framework-green)
+![Maven](https://img.shields.io/badge/Maven-Build%20Tool-C71A36)
+![Hibernate](https://img.shields.io/badge/Hibernate-ORM-59666C)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![Tomcat](https://img.shields.io/badge/Apache-Tomcat-F8DC75)
 
 This project is a SOAP Web Service for library management, built using Spring Framework (Classic), Apache CXF, JPA/Hibernate, and an H2 in-memory database.
 
